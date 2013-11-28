@@ -292,12 +292,14 @@
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
             
             image = [self scaledImageForKey:self.request.URL.absoluteString image:image];
-            
+#ifndef APPORTABLE // Apportable does not support animated gifs
             if (!image.images) // Do not force decod animated GIFs
             {
+#endif
                 image = [UIImage decodedImageWithImage:image];
+#ifndef APPORTABLE
             }
-            
+#endif
             if (CGSizeEqualToSize(image.size, CGSizeZero))
             {
                 completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey: @"Downloaded image has 0 pixels"}], YES);

@@ -14,6 +14,7 @@
 
 inline UIImage *SDScaledImageForKey(NSString *key, UIImage *image)
 {
+#ifndef APPORTABLE // Apportable does not support animated gifs
     if ([image.images count] > 0)
     {
         NSMutableArray *scaledImages = [NSMutableArray array];
@@ -27,6 +28,7 @@ inline UIImage *SDScaledImageForKey(NSString *key, UIImage *image)
     }
     else
     {
+#endif
         if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
         {
             CGFloat scale = 1.0;
@@ -44,5 +46,7 @@ inline UIImage *SDScaledImageForKey(NSString *key, UIImage *image)
             image = scaledImage;
         }
         return image;
+#ifndef APPORTABLE
     }
+#endif
 }

@@ -127,8 +127,9 @@
     
     NSMutableArray *scaledImages = [NSMutableArray array];
     
-    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0); 
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
     
+#ifndef APPORTABLE // Apportable does not support animated gifs
     for (UIImage *image in self.images)
     {
         [image drawInRect:CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledSize.width, scaledSize.height)];
@@ -136,6 +137,7 @@
         
         [scaledImages addObject:newImage];
     }
+#endif
     
     UIGraphicsEndImageContext();
 	
