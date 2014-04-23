@@ -9,6 +9,7 @@
 #import "SDWebImageDownloader.h"
 #import "SDWebImageDownloaderOperation.h"
 #import <ImageIO/ImageIO.h>
+#import <objc/message.h>
 
 NSString *const SDWebImageDownloadStartNotification = @"SDWebImageDownloadStartNotification";
 NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNotification";
@@ -36,10 +37,15 @@ static NSString *const kCompletedCallbackKey = @"completed";
     if (NSClassFromString(@"SDNetworkActivityIndicator"))
     {
 
+#ifdef APPORTABLE
+        id activityIndicator = objc_msgSend(objc_getClass("SDNetworkActivityIndicator"), sel_getUid("sharedActivityIndicator"));
+#else
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
         id activityIndicator = [NSClassFromString(@"SDNetworkActivityIndicator") performSelector:NSSelectorFromString(@"sharedActivityIndicator")];
 #pragma clang diagnostic pop
+#endif
 
         // Remove observer in case it was previously added.
         [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator name:SDWebImageDownloadStartNotification object:nil];
@@ -178,7 +184,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         }
         return;
     }
-    
+
     dispatch_barrier_sync(self.barrierQueue, ^
     {
         BOOL first = NO;

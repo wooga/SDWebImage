@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.summary = 'Asynchronous image downloader with cache support with an UIImageView category.'
   s.homepage = 'https://github.com/rs/SDWebImage'
   s.author = { 'Olivier Poitrey' => 'rs@dailymotion.com' }
-  s.source = { :git => 'https://github.com/wooga/SDWebImage.git', :tag => '3.5_wooga' }
+  s.source = { :git => 'https://github.com/wooga/SDWebImage.git', :tag => '3.5_wooga_a' }
 
   s.description = 'This library provides a category for UIImageView with support for remote '      \
                   'images coming from the web. It provides an UIImageView category adding web '    \
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.framework = 'ImageIO'
-  
+
   s.default_subspec = 'Core'
 
   s.subspec 'Core' do |core|
