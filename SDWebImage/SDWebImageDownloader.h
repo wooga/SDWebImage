@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "SDWebImageCompat.h"
 #import "SDWebImageOperation.h"
+#import "SDWebImageCombinedOperation.h"
+
 
 typedef enum
 {
@@ -82,6 +84,7 @@ typedef void(^SDWebImageDownloaderCompletedBlock)(UIImage *image, NSData *data, 
  *
  * @param url The URL to the image to download
  * @param options The options to be used for this download
+ * @param options The main operation warpping the created operation
  * @param progressBlock A block called repeatedly while the image is downloading
  * @param completedBlock A block called once the download is completed.
  *                  If the download succeeded, the image parameter is set, in case of error,
@@ -92,10 +95,10 @@ typedef void(^SDWebImageDownloaderCompletedBlock)(UIImage *image, NSData *data, 
  *                  before to be called a last time with the full image and finished argument
  *                  set to YES. In case of error, the finished argument is always YES.
  *
- * @return A cancellable SDWebImageOperation
  */
-- (id<SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+- (void)downloadImageWithURL:(NSURL *)url
                                         options:(SDWebImageDownloaderOptions)options
+                                      operation:(SDWebImageCombinedOperation *)mainOperation
                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
 

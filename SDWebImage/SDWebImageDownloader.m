@@ -8,6 +8,7 @@
 
 #import "SDWebImageDownloader.h"
 #import "SDWebImageDownloaderOperation.h"
+#import "SDWebImageCombinedOperation.h"
 #import <ImageIO/ImageIO.h>
 #import <objc/message.h>
 
@@ -115,7 +116,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
     return _downloadQueue.maxConcurrentOperationCount;
 }
 
-- (id<SDWebImageOperation>)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options progress:(void (^)(NSUInteger, long long))progressBlock completed:(void (^)(UIImage *, NSData *, NSError *, BOOL))completedBlock
+- (void)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options operation:(SDWebImageCombinedOperation *)mainOperation progress:(void (^)(NSUInteger, long long))progressBlock completed:(void (^)(UIImage *, NSData *, NSError *, BOOL))completedBlock
 {
     __block SDWebImageDownloaderOperation *operation;
     __weak SDWebImageDownloader *wself = self;
@@ -161,6 +162,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
             SDWebImageDownloader *sself = wself;
             [sself removeCallbacksForURL:url];
         }];
+        mainOperation.cancelBlock = ^{[operation cancel];};
         [wself.downloadQueue addOperation:operation];
         if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder)
         {
@@ -169,8 +171,6 @@ static NSString *const kCompletedCallbackKey = @"completed";
             wself.lastAddedOperation = operation;
         }
     }];
-
-    return operation;
 }
 
 - (void)addProgressCallback:(void (^)(NSUInteger, long long))progressBlock andCompletedBlock:(void (^)(UIImage *, NSData *data, NSError *, BOOL))completedBlock forURL:(NSURL *)url createCallback:(void (^)())createCallback
@@ -185,7 +185,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         return;
     }
 
-    dispatch_barrier_sync(self.barrierQueue, ^
+    dispatch_barrier_async(self.barrierQueue, ^
     {
         BOOL first = NO;
         if (!self.URLCallbacks[url])

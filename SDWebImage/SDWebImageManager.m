@@ -8,15 +8,10 @@
 
 #import "SDWebImageManager.h"
 #import "UIImage+GIF.h"
+#import "SDWebImageCombinedOperation.h"
 #import <objc/message.h>
 
-@interface SDWebImageCombinedOperation : NSObject <SDWebImageOperation>
 
-@property (assign, nonatomic, getter = isCancelled) BOOL cancelled;
-@property (copy, nonatomic) void (^cancelBlock)();
-@property (strong, nonatomic) NSOperation *cacheOperation;
-
-@end
 
 @interface SDWebImageManager ()
 
@@ -151,7 +146,7 @@
                 // ignore image read from NSURLCache if image if cached but force refreshing
                 downloaderOptions |= SDWebImageDownloaderIgnoreCachedResponse;
             }
-            id<SDWebImageOperation> subOperation = [self.imageDownloader downloadImageWithURL:url options:downloaderOptions progress:progressBlock completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished)
+            [self.imageDownloader downloadImageWithURL:url options:downloaderOptions operation:operation progress:progressBlock completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished)
             {                
                 if (weakOperation.isCancelled)
                 {
@@ -228,7 +223,7 @@
                     }
                 }
             }];
-            operation.cancelBlock = ^{[subOperation cancel];};
+
         }
         else if (image)
         {
@@ -274,33 +269,4 @@
 
 @end
 
-@implementation SDWebImageCombinedOperation
 
-- (void)setCancelBlock:(void (^)())cancelBlock
-{
-    if (self.isCancelled)
-    {
-        if (cancelBlock) cancelBlock();
-    }
-    else
-    {
-        _cancelBlock = [cancelBlock copy];
-    }
-}
-
-- (void)cancel
-{
-    self.cancelled = YES;
-    if (self.cacheOperation)
-    {
-        [self.cacheOperation cancel];
-        self.cacheOperation = nil;
-    }
-    if (self.cancelBlock)
-    {
-        self.cancelBlock();
-        self.cancelBlock = nil;
-    }
-}
-
-@end

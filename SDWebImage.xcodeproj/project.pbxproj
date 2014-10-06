@@ -191,6 +191,12 @@
 		A18A6CCE172DC33A00419892 /* NSData+GIF.h in Headers */ = {isa = PBXBuildFile; fileRef = A18A6CCB172DC33A00419892 /* NSData+GIF.h */; };
 		A18A6CCF172DC33A00419892 /* NSData+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = A18A6CCC172DC33A00419892 /* NSData+GIF.m */; };
 		A18A6CD0172DC33A00419892 /* NSData+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = A18A6CCC172DC33A00419892 /* NSData+GIF.m */; };
+		DD1E1134CAF6B3DE5CAD92DA /* SDWebImageCombinedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1E159FFCDAB12EE7A6AB6E /* SDWebImageCombinedOperation.m */; };
+		DD1E1B558C85D60ECB1DC182 /* SDWebImageCombinedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1E1F8843E4DD60EC571996 /* SDWebImageCombinedOperation.h */; };
+		DD1E1C53A33C5C0066ED58F1 /* SDWebImageCombinedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1E1F8843E4DD60EC571996 /* SDWebImageCombinedOperation.h */; };
+		DD1E1E91C7849C17B9DC5977 /* SDWebImageCombinedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1E1F8843E4DD60EC571996 /* SDWebImageCombinedOperation.h */; };
+		DD1E1F5B08E78CBF70242336 /* SDWebImageCombinedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1E159FFCDAB12EE7A6AB6E /* SDWebImageCombinedOperation.m */; };
+		DD1E1F61E3FE16C126CB9962 /* SDWebImageCombinedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1E159FFCDAB12EE7A6AB6E /* SDWebImageCombinedOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,6 +285,8 @@
 		A18A6CC6172DC28500419892 /* UIImage+GIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GIF.m"; sourceTree = "<group>"; };
 		A18A6CCB172DC33A00419892 /* NSData+GIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GIF.h"; sourceTree = "<group>"; };
 		A18A6CCC172DC33A00419892 /* NSData+GIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GIF.m"; sourceTree = "<group>"; };
+		DD1E159FFCDAB12EE7A6AB6E /* SDWebImageCombinedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageCombinedOperation.m; sourceTree = "<group>"; };
+		DD1E1F8843E4DD60EC571996 /* SDWebImageCombinedOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebImageCombinedOperation.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +405,8 @@
 				53922D8C148C56230056699D /* SDWebImageDownloader.m */,
 				530E49E316460AE2002868E7 /* SDWebImageDownloaderOperation.h */,
 				530E49E416460AE2002868E7 /* SDWebImageDownloaderOperation.m */,
+				DD1E159FFCDAB12EE7A6AB6E /* SDWebImageCombinedOperation.m */,
+				DD1E1F8843E4DD60EC571996 /* SDWebImageCombinedOperation.h */,
 			);
 			name = Downloader;
 			sourceTree = "<group>";
@@ -522,6 +532,7 @@
 				53EDFCF617625F4100698166 /* utils.h in Headers */,
 				53EDFCFC17625F5F00698166 /* filters.h in Headers */,
 				53EDFD0217625F7900698166 /* thread.h in Headers */,
+				DD1E1C53A33C5C0066ED58F1 /* SDWebImageCombinedOperation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +553,7 @@
 				A18A6CC7172DC28500419892 /* UIImage+GIF.h in Headers */,
 				A18A6CCD172DC33A00419892 /* NSData+GIF.h in Headers */,
 				53EDFB8A17623F7C00698166 /* UIImage+MultiFormat.h in Headers */,
+				DD1E1E91C7849C17B9DC5977 /* SDWebImageCombinedOperation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +590,7 @@
 				537D95BA17ECC1FE0097C263 /* utils.h in Headers */,
 				537D95BB17ECC1FE0097C263 /* filters.h in Headers */,
 				537D95BC17ECC1FE0097C263 /* thread.h in Headers */,
+				DD1E1B558C85D60ECB1DC182 /* SDWebImageCombinedOperation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,6 +767,7 @@
 				53EDFCF817625F4100698166 /* utils.c in Sources */,
 				53EDFCFE17625F5F00698166 /* filters.c in Sources */,
 				53EDFD0417625F7900698166 /* thread.c in Sources */,
+				DD1E1F61E3FE16C126CB9962 /* SDWebImageCombinedOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -773,6 +787,7 @@
 				A18A6CC9172DC28500419892 /* UIImage+GIF.m in Sources */,
 				A18A6CCF172DC33A00419892 /* NSData+GIF.m in Sources */,
 				53EDFB8C17623F7C00698166 /* UIImage+MultiFormat.m in Sources */,
+				DD1E1134CAF6B3DE5CAD92DA /* SDWebImageCombinedOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -818,6 +833,7 @@
 				537D959817ECC1FE0097C263 /* utils.c in Sources */,
 				537D959917ECC1FE0097C263 /* filters.c in Sources */,
 				537D959A17ECC1FE0097C263 /* thread.c in Sources */,
+				DD1E1F5B08E78CBF70242336 /* SDWebImageCombinedOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
