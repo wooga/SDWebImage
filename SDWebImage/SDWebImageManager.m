@@ -7,15 +7,9 @@
  */
 
 #import "SDWebImageManager.h"
+#import "SDWebImageCombinedOperation.h"
 #import <objc/message.h>
 
-@interface SDWebImageCombinedOperation : NSObject <SDWebImageOperation>
-
-@property (assign, nonatomic, getter = isCancelled) BOOL cancelled;
-@property (copy, nonatomic) SDWebImageNoParamsBlock cancelBlock;
-@property (strong, nonatomic) NSOperation *cacheOperation;
-
-@end
 
 @interface SDWebImageManager ()
 
@@ -179,7 +173,19 @@
                 // ignore image read from NSURLCache if image if cached but force refreshing
                 downloaderOptions |= SDWebImageDownloaderIgnoreCachedResponse;
             }
-            id <SDWebImageOperation> subOperation = [self.imageDownloader downloadImageWithURL:url options:downloaderOptions progress:progressBlock completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished) {
+
+            SDWebImageDownloaderAddSuboperationBlock subOperationAdded = ^(id<SDWebImageOperation> subOperation){
+                weakOperation.cacheOperation = subOperation;
+                weakOperation.cancelBlock = ^{
+                    [subOperation cancel];
+
+                    @synchronized (self.runningOperations) {
+                        [self.runningOperations removeObject:weakOperation];
+                    }
+                };
+            };
+
+            [self.imageDownloader downloadImageWithURL:url options:downloaderOptions createdSubOperation:subOperationAdded progress:progressBlock completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished) {
                 if (weakOperation.isCancelled) {
                     // Do nothing if the operation was cancelled
                     // See #699 for more details
@@ -211,8 +217,7 @@
 #endif
                              [self.delegate respondsToSelector:@selector(imageManager:transformDownloadedImage:withURL:)])
                     {
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^
-                        {
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
                             UIImage *transformedImage = [self.delegate imageManager:self transformDownloadedImage:downloadedImage withURL:url];
 
                             if (transformedImage && finished) {
@@ -246,13 +251,7 @@
                     }
                 }
             }];
-            operation.cancelBlock = ^{
-                [subOperation cancel];
-                
-                @synchronized (self.runningOperations) {
-                    [self.runningOperations removeObject:weakOperation];
-                }
-            };
+
         }
         else if (image) {
             dispatch_main_sync_safe(^{
@@ -296,39 +295,6 @@
 
 - (BOOL)isRunning {
     return self.runningOperations.count > 0;
-}
-
-@end
-
-
-@implementation SDWebImageCombinedOperation
-
-- (void)setCancelBlock:(SDWebImageNoParamsBlock)cancelBlock {
-    // check if the operation is already cancelled, then we just call the cancelBlock
-    if (self.isCancelled) {
-        if (cancelBlock) {
-            cancelBlock();
-        }
-        _cancelBlock = nil; // don't forget to nil the cancelBlock, otherwise we will get crashes
-    } else {
-        _cancelBlock = [cancelBlock copy];
-    }
-}
-
-- (void)cancel {
-    self.cancelled = YES;
-    if (self.cacheOperation) {
-        [self.cacheOperation cancel];
-        self.cacheOperation = nil;
-    }
-    if (self.cancelBlock) {
-        self.cancelBlock();
-        
-        // TODO: this is a temporary fix to #809.
-        // Until we can figure the exact cause of the crash, going with the ivar instead of the setter
-//        self.cancelBlock = nil;
-        _cancelBlock = nil;
-    }
 }
 
 @end

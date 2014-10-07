@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "SDWebImageCompat.h"
 #import "SDWebImageOperation.h"
+#import "SDWebImageCombinedOperation.h"
 
 typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
     SDWebImageDownloaderLowPriority = 1 << 0,
@@ -67,6 +68,8 @@ typedef NS_ENUM(NSInteger, SDWebImageDownloaderExecutionOrder) {
 
 extern NSString *const SDWebImageDownloadStartNotification;
 extern NSString *const SDWebImageDownloadStopNotification;
+
+typedef void(^SDWebImageDownloaderAddSuboperationBlock)(id<SDWebImageOperation> operation);
 
 typedef void(^SDWebImageDownloaderProgressBlock)(NSInteger receivedSize, NSInteger expectedSize);
 
@@ -148,6 +151,7 @@ typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDi
  *
  * @param url            The URL to the image to download
  * @param options        The options to be used for this download
+ * @param parentOperation     The parent operation warpping the created operation
  * @param progressBlock  A block called repeatedly while the image is downloading
  * @param completedBlock A block called once the download is completed.
  *                       If the download succeeded, the image parameter is set, in case of error,
@@ -158,10 +162,10 @@ typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDi
  *                       before to be called a last time with the full image and finished argument
  *                       set to YES. In case of error, the finished argument is always YES.
  *
- * @return A cancellable SDWebImageOperation
  */
 - (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
                                          options:(SDWebImageDownloaderOptions)options
+                             createdSubOperation:(SDWebImageDownloaderAddSuboperationBlock)addSubOperationBlock
                                         progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                        completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
 

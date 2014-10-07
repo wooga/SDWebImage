@@ -8,7 +8,9 @@
 
 #import "SDWebImageDownloader.h"
 #import "SDWebImageDownloaderOperation.h"
+#import "SDWebImageCombinedOperation.h"
 #import <ImageIO/ImageIO.h>
+#import <objc/message.h>
 
 NSString *const SDWebImageDownloadStartNotification = @"SDWebImageDownloadStartNotification";
 NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNotification";
@@ -104,11 +106,12 @@ static NSString *const kCompletedCallbackKey = @"completed";
     return _downloadQueue.maxConcurrentOperationCount;
 }
 
-- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageDownloaderCompletedBlock)completedBlock {
-    __block SDWebImageDownloaderOperation *operation;
+- (void)downloadImageWithURL:(NSURL *)url options:(SDWebImageDownloaderOptions)options createdSubOperation:(SDWebImageDownloaderAddSuboperationBlock)addSubOperationBlock progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageDownloaderCompletedBlock)completedBlock {
+
     __weak SDWebImageDownloader *wself = self;
 
     [self addProgressCallback:progressBlock andCompletedBlock:completedBlock forURL:url createCallback:^{
+        SDWebImageDownloaderOperation *operation;
         NSTimeInterval timeoutInterval = wself.downloadTimeout;
         if (timeoutInterval == 0.0) {
             timeoutInterval = 15.0;
@@ -164,7 +167,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         } else if (options & SDWebImageDownloaderLowPriority) {
             operation.queuePriority = NSOperationQueuePriorityLow;
         }
-
+        addSubOperationBlock(operation);
         [wself.downloadQueue addOperation:operation];
         if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
             // Emulate LIFO execution order by systematically adding new operations as last operation's dependency
@@ -172,8 +175,6 @@ static NSString *const kCompletedCallbackKey = @"completed";
             wself.lastAddedOperation = operation;
         }
     }];
-
-    return operation;
 }
 
 - (void)addProgressCallback:(SDWebImageDownloaderProgressBlock)progressBlock andCompletedBlock:(SDWebImageDownloaderCompletedBlock)completedBlock forURL:(NSURL *)url createCallback:(SDWebImageNoParamsBlock)createCallback {
@@ -185,7 +186,8 @@ static NSString *const kCompletedCallbackKey = @"completed";
         return;
     }
 
-    dispatch_barrier_sync(self.barrierQueue, ^{
+    dispatch_barrier_async(self.barrierQueue, ^
+    {
         BOOL first = NO;
         if (!self.URLCallbacks[url]) {
             self.URLCallbacks[url] = [NSMutableArray new];
