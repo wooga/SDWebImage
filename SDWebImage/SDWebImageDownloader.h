@@ -98,7 +98,7 @@ typedef void(^SDWebImageDownloaderCompletedBlock)(UIImage *image, NSData *data, 
  */
 - (void)downloadImageWithURL:(NSURL *)url
                                         options:(SDWebImageDownloaderOptions)options
-                                      operation:(SDWebImageCombinedOperation *)mainOperation
+                                      operation:(SDWebImageCombinedOperation *)parentOperation
                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
 
