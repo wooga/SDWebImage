@@ -11,6 +11,14 @@
 #import "SDWebImageDownloader.h"
 #import "SDImageCache.h"
 
+#ifdef APPORTABLE
+
+#ifndef __deprecated_msg
+#define __deprecated_msg(_msg)
+#endif
+
+#endif
+
 typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
     /**
      * By default, when a URL fail to be downloaded, the URL is blacklisted so the library won't keep trying.

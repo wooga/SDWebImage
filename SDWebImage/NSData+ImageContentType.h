@@ -5,6 +5,14 @@
 
 #import <Foundation/Foundation.h>
 
+#ifdef APPORTABLE
+
+#ifndef __deprecated_msg
+#define __deprecated_msg(_msg)
+#endif
+
+#endif
+
 @interface NSData (ImageContentType)
 
 /**

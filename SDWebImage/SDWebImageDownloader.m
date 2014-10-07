@@ -117,7 +117,9 @@ static NSString *const kCompletedCallbackKey = @"completed";
         // In order to prevent from potential duplicate caching (NSURLCache + SDImageCache) we disable the cache for image requests if told otherwise
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:(options & SDWebImageDownloaderUseNSURLCache ? NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData) timeoutInterval:timeoutInterval];
         request.HTTPShouldHandleCookies = (options & SDWebImageDownloaderHandleCookies);
+#ifndef APPORTABLE
         request.HTTPShouldUsePipelining = YES;
+#endif
         if (wself.headersFilter) {
             request.allHTTPHeaderFields = wself.headersFilter(url, [wself.HTTPHeaders copy]);
         }

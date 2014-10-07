@@ -12,7 +12,9 @@
 #import <ImageIO/ImageIO.h>
 #import "SDWebImageManager.h"
 
-@interface SDWebImageDownloaderOperation () <NSURLConnectionDataDelegate>
+
+
+@interface SDWebImageDownloaderOperation () <NSURLConnectionDataDelegate> 
 
 @property (copy, nonatomic) SDWebImageDownloaderProgressBlock progressBlock;
 @property (copy, nonatomic) SDWebImageDownloaderCompletedBlock completedBlock;
@@ -182,13 +184,15 @@
     [self didChangeValueForKey:@"isFinished"];
 }
 
-- (void)setExecuting:(BOOL)executing {
+- (void)setExecuting:(BOOL)executing
+{
     [self willChangeValueForKey:@"isExecuting"];
     _executing = executing;
     [self didChangeValueForKey:@"isExecuting"];
 }
 
-- (BOOL)isConcurrent {
+- (BOOL)isConcurrent
+{
     return YES;
 }
 
@@ -349,9 +353,13 @@
             image = [self scaledImageForKey:key image:image];
             
             // Do not force decoding animated GIFs
+#ifndef APPORTABLE // Apportable does not support animated gifs
             if (!image.images) {
+#endif
                 image = [UIImage decodedImageWithImage:image];
+#ifndef APPORTABLE
             }
+#endif
             if (CGSizeEqualToSize(image.size, CGSizeZero)) {
                 completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded image has 0 pixels"}], YES);
             }

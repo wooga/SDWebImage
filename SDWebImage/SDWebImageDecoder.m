@@ -13,11 +13,13 @@
 @implementation UIImage (ForceDecode)
 
 + (UIImage *)decodedImageWithImage:(UIImage *)image {
+#ifndef APPORTABLE // Apportable does not support animated gifs
     if (image.images) {
         // Do not decode animated images
         return image;
     }
-
+#endif
+    
     CGImageRef imageRef = image.CGImage;
     CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
     CGRect imageRect = (CGRect){.origin = CGPointZero, .size = imageSize};

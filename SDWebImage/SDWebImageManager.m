@@ -204,9 +204,15 @@
                     if (options & SDWebImageRefreshCached && image && !downloadedImage) {
                         // Image refresh hit the NSURLCache cache, do not call the completion block
                     }
-                            // NOTE: We don't call transformDownloadedImage delegate method on animated images as most transformation code would mangle it
-                    else if (downloadedImage && !downloadedImage.images && [self.delegate respondsToSelector:@selector(imageManager:transformDownloadedImage:withURL:)]) {
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                    // NOTE: We don't call transformDownloadedImage delegate method on animated images as most transformation code would mangle it
+                    else if (downloadedImage &&
+#ifndef APPORTABLE // Apportable does not support animated gifs
+                             !downloadedImage.images &&
+#endif
+                             [self.delegate respondsToSelector:@selector(imageManager:transformDownloadedImage:withURL:)])
+                    {
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^
+                        {
                             UIImage *transformedImage = [self.delegate imageManager:self transformDownloadedImage:downloadedImage withURL:url];
 
                             if (transformedImage && finished) {
