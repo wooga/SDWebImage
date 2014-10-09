@@ -163,7 +163,7 @@ typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDi
  *                       set to YES. In case of error, the finished argument is always YES.
  *
  */
-- (id <SDWebImageOperation>)downloadImageWithURL:(NSURL *)url
+- (void)downloadImageWithURL:(NSURL *)url
                                          options:(SDWebImageDownloaderOptions)options
                              createdSubOperation:(SDWebImageDownloaderAddSuboperationBlock)addSubOperationBlock
                                         progress:(SDWebImageDownloaderProgressBlock)progressBlock
